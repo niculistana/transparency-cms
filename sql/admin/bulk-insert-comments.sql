@@ -1,0 +1,1 @@
+INSERT INTO comments (author, text, likes, image, created_at) VALUES %L RETURNING comment_id

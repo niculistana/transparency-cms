@@ -1,0 +1,134 @@
+import { create, type ExtractState } from "zustand";
+import { type Comment } from "../types/Comment";
+import { StateChangeResourceRequest } from "./shared/StateChangeResourceRequest";
+import { host } from "./shared/Config";
+
+export const useAppService = create(() => ({
+  comments: new Map(),
+  selectedComment: null as Comment | null,
+  deletedComment: null,
+  error: "",
+}));
+
+export const setSelectedComment = (comment: Comment | null) =>
+  useAppService.setState(() => ({ selectedComment: comment }));
+
+export const setDeletedComment = () =>
+  useAppService.setState((state) => ({ deletedComment: state.deletedComment }));
+
+export const fetchComments = async () => {
+  const data = await fetch(`${host}/comments`)
+    .then((data) => data.json())
+    .catch((error) => {
+      return {
+        error: error?.message || "Unknown error",
+      };
+    });
+
+  if (data?.error) {
+    useAppService.setState({ error: data.error });
+  } else {
+    const newCommentMap = new Map();
+
+    data.forEach((c: Comment) => {
+      newCommentMap.set(c.comment_id, c);
+    });
+
+    useAppService.setState(() => ({
+      comments: newCommentMap,
+    }));
+  }
+};
+export const saveLikes = async ({ comment_id, likes = 1 }: Comment) => {
+  if (!!comment_id) {
+    await updateComment({
+      comment_id,
+      likes,
+    });
+  }
+};
+
+export const saveText = async ({ comment_id, text }: Comment) => {
+  if (!!comment_id) {
+    await updateComment({
+      comment_id,
+      text,
+    });
+  }
+
+  setSelectedComment(null);
+};
+
+export const updateComment = async ({
+  comment_id,
+  text,
+  author,
+  likes,
+  image,
+}: Comment) => {
+  const request = new StateChangeResourceRequest("comment", "PUT");
+
+  const data = await request.fetch({ comment_id, text, author, likes, image });
+
+  if (data?.error) {
+    useAppService.setState({ error: data.error });
+  } else {
+    const key = data.comment_id;
+    const value = data;
+    useAppService.setState((state) => {
+      const newMap = new Map(state.comments);
+      newMap.set(key, value);
+
+      return {
+        comments: newMap,
+      };
+    });
+  }
+};
+
+export const createComment = async ({
+  text,
+  author = "Admin",
+  likes = 1,
+  image,
+}: Comment) => {
+  const request = new StateChangeResourceRequest("comment", "POST");
+  const data = await request.fetch({ text, author, likes, image });
+
+  if (data?.error) {
+    useAppService.setState({ error: data.error });
+  } else {
+    const key = data.comment_id;
+    const value = data;
+    useAppService.setState((state) => {
+      const newMap = new Map(state.comments);
+      newMap.set(key, value);
+      return {
+        comments: newMap,
+      };
+    });
+  }
+};
+
+export const deleteComment = async ({ comment_id }: Comment) => {
+  const request = new StateChangeResourceRequest("comment", "DELETE");
+  const data = await request.fetch({ comment_id });
+
+  if (data?.error) {
+    useAppService.setState({ error: data.error });
+  } else {
+    const key = comment_id;
+    useAppService.setState((state) => {
+      const next = new Map(state.comments);
+      next.delete(key);
+      return {
+        comments: next,
+      };
+    });
+  }
+};
+
+export const setError = (error: string) =>
+  useAppService.setState(() => ({ error }));
+
+export type AppState = ExtractState<typeof useAppService>;

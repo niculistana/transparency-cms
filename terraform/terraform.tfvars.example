@@ -1,0 +1,11 @@
+# Terraform Variables Example
+# Copy this file terraform.tfvars and fill in the values
+
+# AWS region to deploy resources
+aws_region = "ap-southeast-1"
+
+# IMPORTANT: Before deploying, ensure AWS Secrets Manager has the database connection string
+# Secret path: {environment}/TransparencyCMS/RDS_PSQL_CONNECTION_STRING
+# Expected format: {"RDS_PSQL_CONNECTION_STRING": "postgresql://user:password@host:port/dbname"}
+#
+# For prod: prod/TransparencyCMS/RDS_PSQL_CONNECTION_STRING
