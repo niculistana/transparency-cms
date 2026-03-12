@@ -3,7 +3,9 @@ import { Trash } from "lucide-react";
 
 export const DeleteButton = ({ commentId }: { commentId: number }) => {
   const onDelete = () => {
+    console.log("On delete");
     if (confirm("Are you sure you want to delete this comment?")) {
+      console.log("confirmed");
       deleteComment({ comment_id: commentId });
     }
   };

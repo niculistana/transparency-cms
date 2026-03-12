@@ -1,25 +1,32 @@
 import { useEffect, useState } from "react";
 import { saveText, setSelectedComment } from "../../../services/AppService";
 import { type Comment } from "../../../types/Comment";
-import { EditButton } from "../../button";
+import { EditButton, FlagButton } from "../../button";
 import { SubmitButton } from "../../button/submit/SubmitButton";
 import { DeleteButton } from "../../button";
 
 export const ButtonManager = ({
   comment,
   editingComment,
-  userRole,
+  user,
+  context,
 }: {
   comment: Comment;
   editingComment: Comment | null;
-  userRole: string | null;
+  user: {
+    role: string | null;
+    isAuthor: boolean;
+  };
+  context: "document" | "moderate";
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [textAreaText, setTextAreaText] = useState<string | undefined>(
     comment.text,
   );
 
-  const isAdmin = userRole === "ADMIN";
+  const { role, isAuthor } = user;
+
+  const isAdmin = role === "ADMIN";
 
   useEffect(() => {
     if (editingComment && comment.comment_id === editingComment.comment_id) {
@@ -40,7 +47,7 @@ export const ButtonManager = ({
 
   return (
     <div className="w-full">
-      {isAdmin && (
+      {isAuthor && (
         <div className="flex flex-1 flex-col items-end self-end mb-4">
           <EditButton
             onClick={onEditButtonClick}
@@ -76,13 +83,20 @@ export const ButtonManager = ({
           </form>
         </div>
       )}
-      {isAdmin && (
-        <div className="flex flex-1 flex-col items-end self-end mb-4 float-right">
-          {comment.comment_id && (
+      <div className="flex gap-4 justify-end">
+        {context === "moderate" && comment.comment_id && (
+          <FlagButton
+            commentId={comment.comment_id}
+            isFlagged={(!isAuthor && comment.flagged) || false}
+          />
+        )}
+        {context === "moderate" &&
+          isAdmin &&
+          comment.comment_id &&
+          comment.flagged && (
             <DeleteButton commentId={comment.comment_id}></DeleteButton>
           )}
-        </div>
-      )}
+      </div>
     </div>
   );
 };

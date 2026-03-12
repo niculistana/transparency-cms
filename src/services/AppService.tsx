@@ -16,8 +16,8 @@ export const setSelectedComment = (comment: Comment | null) =>
 export const setDeletedComment = () =>
   useAppService.setState((state) => ({ deletedComment: state.deletedComment }));
 
-export const fetchComments = async () => {
-  const data = await fetch(`${host}/comments`)
+export const fetchAdminComments = async () => {
+  const data = await fetch(`${host}/admin/get_all_comments`)
     .then((data) => data.json())
     .catch((error) => {
       return {
@@ -30,9 +30,11 @@ export const fetchComments = async () => {
   } else {
     const newCommentMap = new Map();
 
-    data.forEach((c: Comment) => {
-      newCommentMap.set(c.comment_id, c);
-    });
+    if (data && Array.isArray(data)) {
+      data.forEach((c: Comment) => {
+        newCommentMap.set(c.comment_id, c);
+      });
+    }
 
     useAppService.setState(() => ({
       comments: newCommentMap,
@@ -44,6 +46,30 @@ export const saveLikes = async ({ comment_id, likes = 1 }: Comment) => {
     await updateComment({
       comment_id,
       likes,
+    });
+  }
+};
+
+export const flagComment = async ({ comment_id, flagged }: Comment) => {
+  if (comment_id === undefined || flagged === undefined) {
+    return;
+  }
+
+  const request = new StateChangeResourceRequest("comment/flag", "PUT");
+  const data = await request.fetch({ comment_id, flagged });
+
+  if (data?.error) {
+    useAppService.setState({ error: data.error });
+  } else {
+    const key = data.comment_id;
+    const value = data;
+    useAppService.setState((state) => {
+      const newMap = new Map(state.comments);
+      newMap.set(key, value);
+
+      return {
+        comments: newMap,
+      };
     });
   }
 };
@@ -111,7 +137,11 @@ export const createComment = async ({
 };
 
 export const deleteComment = async ({ comment_id }: Comment) => {
-  const request = new StateChangeResourceRequest("comment", "DELETE");
+  console.log("deleting comment");
+  const request = new StateChangeResourceRequest(
+    "admin/delete_comment",
+    "DELETE",
+  );
   const data = await request.fetch({ comment_id });
 
   if (data?.error) {

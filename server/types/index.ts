@@ -5,3 +5,8 @@ export type InsertCommentDao = {
   image: string;
   date: string;
 };
+
+export type InsertDocumentDao = {
+  external_link: string;
+  date: string;
+};

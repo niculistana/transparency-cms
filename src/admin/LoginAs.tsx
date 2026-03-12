@@ -58,7 +58,7 @@ export function LoginAs() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+      <div className="w-full max-w-md p-8 bg-white shadow-lg">
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
           Login As
         </h1>
@@ -71,7 +71,7 @@ export function LoginAs() {
             <button
               key={role.role_id}
               onClick={() => handleLoginAs(role.role_name || "")}
-              className={`w-full p-4 text-left rounded-lg border-2 transition-all duration-200 ${
+              className={`w-full p-4 text-left border-2 transition-all duration-200 ${
                 selectedRole === role.role_name
                   ? "border-blue-500 bg-blue-50"
                   : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
@@ -109,7 +109,7 @@ export function LoginAs() {
         </div>
 
         {selectedRole && (
-          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <div className="mt-6 p-4 bg-green-50 border border-green-200">
             <p className="text-sm text-green-800 text-center">
               Logged in as <strong>{selectedRole}</strong>
             </p>

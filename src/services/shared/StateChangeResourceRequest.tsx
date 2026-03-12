@@ -10,13 +10,14 @@ export class StateChangeResourceRequest {
     this.httpVerb = httpVerb;
   }
 
-  async fetch({ comment_id, text, author, likes, image }: Comment) {
+  async fetch({ comment_id, text, author, likes, image, flagged }: Comment) {
     const requestBody = {
       comment_id,
       text,
       author,
       likes,
       image,
+      flagged,
     };
 
     const data = await fetch(`${host}/${this.resourceName}`, {

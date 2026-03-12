@@ -4,5 +4,6 @@ CREATE TABLE comments (
     author TEXT,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     likes INTEGER,
-    image TEXT
+    image TEXT,
+    flagged BOOLEAN DEFAULT FALSE
 )

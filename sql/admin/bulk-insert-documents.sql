@@ -1,0 +1,1 @@
+INSERT INTO documents (external_link, created_at) VALUES %L RETURNING document_id

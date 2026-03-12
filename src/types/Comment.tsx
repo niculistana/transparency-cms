@@ -5,4 +5,5 @@ export type Comment = {
   created_at?: string;
   likes?: number;
   image?: string;
+  flagged?: boolean;
 };
