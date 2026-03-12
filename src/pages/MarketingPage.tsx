@@ -14,13 +14,13 @@ export function MarketingPage() {
         <div className="space-x-4">
           <Link
             to="/login"
-            className="inline-block px-8 py-3 bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors duration-200"
+            className="inline-block px-8 py-3 bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200"
           >
             Get Started
           </Link>
           <Link
             to="/home"
-            className="inline-block px-8 py-3 bg-gray-200 text-gray-800 font-semibold hover:bg-gray-300 transition-colors duration-200"
+            className="inline-block px-8 py-3 bg-gray-200 text-gray-800 hover:bg-gray-300 transition-colors duration-200"
           >
             Learn More
           </Link>

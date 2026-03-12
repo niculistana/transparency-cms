@@ -1,9 +1,9 @@
 import { create, type ExtractState } from "zustand";
-import { type Comment } from "../types/Comment";
-import { StateChangeResourceRequest } from "./shared/StateChangeResourceRequest";
-import { host } from "./shared/Config";
+import { type Comment } from "../../types/Comment";
+import { StateChangeResourceRequest } from "../shared/StateChangeResourceRequest";
+import { host } from "../shared/Config";
 
-export const useAppService = create(() => ({
+export const useCommentModerationService = create(() => ({
   comments: new Map(),
   selectedComment: null as Comment | null,
   deletedComment: null,
@@ -11,10 +11,12 @@ export const useAppService = create(() => ({
 }));
 
 export const setSelectedComment = (comment: Comment | null) =>
-  useAppService.setState(() => ({ selectedComment: comment }));
+  useCommentModerationService.setState(() => ({ selectedComment: comment }));
 
 export const setDeletedComment = () =>
-  useAppService.setState((state) => ({ deletedComment: state.deletedComment }));
+  useCommentModerationService.setState((state) => ({
+    deletedComment: state.deletedComment,
+  }));
 
 export const fetchAdminComments = async () => {
   const data = await fetch(`${host}/admin/get_all_comments`)
@@ -26,7 +28,7 @@ export const fetchAdminComments = async () => {
     });
 
   if (data?.error) {
-    useAppService.setState({ error: data.error });
+    useCommentModerationService.setState({ error: data.error });
   } else {
     const newCommentMap = new Map();
 
@@ -36,7 +38,7 @@ export const fetchAdminComments = async () => {
       });
     }
 
-    useAppService.setState(() => ({
+    useCommentModerationService.setState(() => ({
       comments: newCommentMap,
     }));
   }
@@ -59,11 +61,11 @@ export const flagComment = async ({ comment_id, flagged }: Comment) => {
   const data = await request.fetch({ comment_id, flagged });
 
   if (data?.error) {
-    useAppService.setState({ error: data.error });
+    useCommentModerationService.setState({ error: data.error });
   } else {
     const key = data.comment_id;
     const value = data;
-    useAppService.setState((state) => {
+    useCommentModerationService.setState((state) => {
       const newMap = new Map(state.comments);
       newMap.set(key, value);
 
@@ -97,38 +99,14 @@ export const updateComment = async ({
   const data = await request.fetch({ comment_id, text, author, likes, image });
 
   if (data?.error) {
-    useAppService.setState({ error: data.error });
+    useCommentModerationService.setState({ error: data.error });
   } else {
     const key = data.comment_id;
     const value = data;
-    useAppService.setState((state) => {
+    useCommentModerationService.setState((state) => {
       const newMap = new Map(state.comments);
       newMap.set(key, value);
 
-      return {
-        comments: newMap,
-      };
-    });
-  }
-};
-
-export const createComment = async ({
-  text,
-  author = "Admin",
-  likes = 1,
-  image,
-}: Comment) => {
-  const request = new StateChangeResourceRequest("comment", "POST");
-  const data = await request.fetch({ text, author, likes, image });
-
-  if (data?.error) {
-    useAppService.setState({ error: data.error });
-  } else {
-    const key = data.comment_id;
-    const value = data;
-    useAppService.setState((state) => {
-      const newMap = new Map(state.comments);
-      newMap.set(key, value);
       return {
         comments: newMap,
       };
@@ -145,10 +123,10 @@ export const deleteComment = async ({ comment_id }: Comment) => {
   const data = await request.fetch({ comment_id });
 
   if (data?.error) {
-    useAppService.setState({ error: data.error });
+    useCommentModerationService.setState({ error: data.error });
   } else {
     const key = comment_id;
-    useAppService.setState((state) => {
+    useCommentModerationService.setState((state) => {
       const next = new Map(state.comments);
       next.delete(key);
       return {
@@ -159,6 +137,8 @@ export const deleteComment = async ({ comment_id }: Comment) => {
 };
 
 export const setError = (error: string) =>
-  useAppService.setState(() => ({ error }));
+  useCommentModerationService.setState(() => ({ error }));
 
-export type AppState = ExtractState<typeof useAppService>;
+export type CommentModerationState = ExtractState<
+  typeof useCommentModerationService
+>;

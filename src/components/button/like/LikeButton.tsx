@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { saveLikes } from "../../../services/AppService";
+import { saveLikes } from "../../../services/comment-moderation/CommentModerationService";
 import { ThumbsUp } from "lucide-react";
 
 export const LikeButton = ({

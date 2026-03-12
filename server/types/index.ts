@@ -7,6 +7,7 @@ export type InsertCommentDao = {
 };
 
 export type InsertDocumentDao = {
+  title: string;
   external_link: string;
   date: string;
 };

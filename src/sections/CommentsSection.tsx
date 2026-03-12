@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
-import { useAppService, type AppState } from "../services/AppService";
 import { useAuthService } from "../services/AuthService";
 import { type Comment } from "../types/Comment";
 import { LikeButton } from "../components/button";
 import { ButtonManager, sortByDate } from "../components/util";
+import {
+  setCommentsMap,
+  useCommentService,
+  type CommentState,
+} from "../services/comment/CommentService";
 
 interface CommentsSectionProps {
   comments?: Comment[];
@@ -17,15 +21,32 @@ export function CommentsSection({
 
   const currentRole = useAuthService((state) => state.currentRole);
 
-  const selectedComment = useAppService(
-    (state: AppState) => state.selectedComment,
+  const selectedComment = useCommentService(
+    (state: CommentState) => state.selectedComment,
+  );
+
+  const fetchedCommentsMap = useCommentService(
+    (state: CommentState) => state.commentsMap,
   );
 
   useEffect(() => {
     if (commentsProp && commentsProp.length > 0) {
-      setLoadedComments(commentsProp.sort(sortByDate));
+      const commentsMap = new Map<number, Comment>();
+      commentsProp.forEach((comment) => {
+        if (comment.comment_id !== undefined) {
+          commentsMap.set(comment.comment_id, comment);
+        }
+      });
+      setCommentsMap(commentsMap);
     }
   }, [commentsProp]);
+
+  useEffect(() => {
+    const commentsFromMap = Array.from(fetchedCommentsMap.values());
+    const sortedComments = commentsFromMap.sort(sortByDate);
+    console.log(sortedComments);
+    setLoadedComments(sortedComments);
+  }, [fetchedCommentsMap]);
 
   useEffect(() => {
     setEditingComment(selectedComment);
@@ -36,7 +57,7 @@ export function CommentsSection({
   }
 
   return (
-    <div className="w-96 lg:w-[750px] grid grid-cols-1 m-auto">
+    <div className="w-96 lg:w-full px-24 grid grid-cols-1 m-auto">
       <div className="grid grid-cols-1 m-auto">
         {loadedComments?.length ? (
           loadedComments.map((comment) => (
@@ -88,7 +109,7 @@ export function CommentsSection({
             </>
           ))
         ) : (
-          <div>No comments.</div>
+          <div className="font-serif">No comments.</div>
         )}
       </div>
     </div>

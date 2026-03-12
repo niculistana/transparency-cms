@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { saveText, setSelectedComment } from "../../../services/AppService";
+import {
+  saveText,
+  setSelectedComment,
+} from "../../../services/comment-moderation/CommentModerationService";
 import { type Comment } from "../../../types/Comment";
 import { EditButton, FlagButton } from "../../button";
 import { SubmitButton } from "../../button/submit/SubmitButton";

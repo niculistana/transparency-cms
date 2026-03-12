@@ -79,9 +79,7 @@ export function LoginAs() {
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <h3 className="font-semibold text-lg text-gray-800">
-                    {role.role_name}
-                  </h3>
+                  <h3 className="text-lg text-gray-800">{role.role_name}</h3>
                   {role.description && (
                     <p className="text-sm text-gray-600 mt-1">
                       {role.description}

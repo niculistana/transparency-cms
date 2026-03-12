@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { flagComment } from "../../../services/AppService";
+import { flagComment } from "../../../services/comment-moderation/CommentModerationService";
 import { Flag } from "lucide-react";
 
 export const FlagButton = ({

@@ -1,4 +1,4 @@
-import { deleteComment } from "../../../services/AppService";
+import { deleteComment } from "../../../services/comment-moderation/CommentModerationService";
 import { Trash } from "lucide-react";
 
 export const DeleteButton = ({ commentId }: { commentId: number }) => {

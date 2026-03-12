@@ -1,19 +1,12 @@
 import { useEffect, useState } from "react";
 import {
-  useAppService,
+  useCommentModerationService,
   fetchAdminComments,
-  type AppState,
-} from "../services/AppService";
+  type CommentModerationState,
+} from "../services/comment-moderation/CommentModerationService";
 import { useAuthService } from "../services/AuthService";
 import { type Comment } from "../types/Comment";
-import {
-  MessageSquare,
-  ThumbsUp,
-  User,
-  Calendar,
-  Flag,
-  Search,
-} from "lucide-react";
+import { MessageSquare, User, Calendar, Flag, Search } from "lucide-react";
 import { ButtonManager, sortByDate } from "../components/util";
 
 export function CommentModerationPage() {
@@ -28,12 +21,14 @@ export function CommentModerationPage() {
   const [editingComment, setEditingComment] = useState<Comment | null>(null);
 
   const currentRole = useAuthService((state) => state.currentRole);
-  const comments: Map<number, Comment> = useAppService(
-    (state: AppState) => state.comments,
+  const comments: Map<number, Comment> = useCommentModerationService(
+    (state: CommentModerationState) => state.comments,
   );
-  const error: string = useAppService((state: AppState) => state.error);
-  const selectedComment = useAppService(
-    (state: AppState) => state.selectedComment,
+  const error: string = useCommentModerationService(
+    (state: CommentModerationState) => state.error,
+  );
+  const selectedComment = useCommentModerationService(
+    (state: CommentModerationState) => state.selectedComment,
   );
 
   useEffect(() => {
@@ -94,15 +89,6 @@ export function CommentModerationPage() {
       }`}
     >
       <div className="flex gap-4">
-        <div className="flex-shrink-0">
-          <div className="flex flex-col items-center gap-2 pt-2">
-            <ThumbsUp className="h-5 w-5 text-gray-400" />
-            <span className="text-sm font-semibold text-gray-700">
-              {comment.likes || 0}
-            </span>
-          </div>
-        </div>
-
         <div className="flex-1 min-w-0">
           <div className="mb-4">
             <p className="text-gray-900 font-serif whitespace-pre-wrap break-words">
@@ -190,7 +176,7 @@ export function CommentModerationPage() {
             {/* Flagged Comments Section */}
             {flaggedComments.length > 0 && (
               <div className="mb-12">
-                <div className="flex items-center gap-2 mb-6 bg-red-50 border border-red-300 p-4 rounded">
+                <div className="flex items-center gap-2 mb-6 bg-red-50 border border-red-300 p-4">
                   <Flag className="h-6 w-6 text-red-600" />
                   <h2 className="text-2xl font-bold font-serif text-red-900">
                     Flagged Comments ({flaggedComments.length})
@@ -217,7 +203,7 @@ export function CommentModerationPage() {
                     placeholder="Search comments by text, author, or ID..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-serif"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-serif"
                   />
                   {searchQuery && (
                     <button
@@ -235,7 +221,7 @@ export function CommentModerationPage() {
                     renderComment(comment, false),
                   )
                 ) : (
-                  <div className="text-center py-12 bg-gray-50 rounded-lg">
+                  <div className="text-center py-12 bg-gray-50">
                     <MessageSquare className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                     <p className="text-gray-600 font-serif">
                       {searchQuery

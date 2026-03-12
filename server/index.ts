@@ -90,27 +90,6 @@ app.put("/comment", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/comment", async (req: Request, res: Response) => {
-  const { text, author, likes, image } = req.body;
-
-  if (!text?.length || !author?.length || likes < 0 || !image?.length) {
-    return res.status(400);
-  }
-
-  const insertCommentQuery = getSQLString("comment/insert-comment.sql");
-  try {
-    const comment = await db.query(insertCommentQuery, [
-      text,
-      author,
-      likes,
-      image,
-    ]);
-    return res.status(200).json(comment.rows[0]);
-  } catch (error) {
-    return res.status(500);
-  }
-});
-
 app.put("/comment/flag", async (req: Request, res: Response) => {
   const { comment_id, flagged } = req.body;
 
@@ -262,6 +241,71 @@ app.get("/documents", async (req: Request, res: Response) => {
   }
 });
 
+app.post("/documents", async (req: Request, res: Response) => {
+  const { title, external_link } = req.body;
+
+  if (!title || !title.trim()) {
+    return res.status(400).json({ message: "Bad Request - title is required" });
+  }
+
+  if (!external_link || !external_link.trim()) {
+    return res
+      .status(400)
+      .json({ message: "Bad Request - external_link is required" });
+  }
+
+  const insertDocumentQuery = getSQLString("document/insert-document.sql");
+
+  try {
+    const document = await db.query(insertDocumentQuery, [
+      title,
+      external_link,
+    ]);
+    return res.status(201).json(document.rows[0]);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.put("/documents/:id", async (req: Request, res: Response) => {
+  const documentId = req.params.id;
+  const { title, external_link } = req.body;
+
+  if (!documentId) {
+    return res
+      .status(400)
+      .json({ message: "Bad Request - Document ID required" });
+  }
+
+  if (!title || !title.trim()) {
+    return res.status(400).json({ message: "Bad Request - title is required" });
+  }
+
+  if (!external_link || !external_link.trim()) {
+    return res
+      .status(400)
+      .json({ message: "Bad Request - external_link is required" });
+  }
+
+  const updateDocumentQuery = getSQLString("document/update-document.sql");
+
+  try {
+    const document = await db.query(updateDocumentQuery, [
+      title,
+      external_link,
+      documentId,
+    ]);
+
+    if (document.rows.length === 0) {
+      return res.status(404).json({ message: "Document not found" });
+    }
+
+    return res.status(200).json(document.rows[0]);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 app.get("/documents/:id", async (req: Request, res: Response) => {
   const documentId = req.params.id;
   const getDocumentByIdQuery = getSQLString("document/get-document-by-id.sql");
@@ -364,6 +408,91 @@ app.delete(
   },
 );
 
+app.post("/documents/:id/submission", async (req: Request, res: Response) => {
+  const documentId = req.params.id;
+  const { submitted_by, status } = req.body;
+  const insertSubmissionQuery = getSQLString(
+    "submission/insert-submission.sql",
+  );
+
+  if (!documentId) {
+    return res
+      .status(400)
+      .json({ message: "Bad Request - Document ID required" });
+  }
+
+  if (!submitted_by || !submitted_by.trim()) {
+    return res
+      .status(400)
+      .json({ message: "Bad Request - submitted_by is required" });
+  }
+
+  try {
+    const submission = await db.query(insertSubmissionQuery, [
+      documentId,
+      submitted_by,
+      status || null,
+    ]);
+    return res.status(201).json(submission.rows[0]);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.get("/documents/:id/submission", async (req: Request, res: Response) => {
+  const documentId = req.params.id;
+  const getSubmissionQuery = getSQLString("submission/get-submission.sql");
+
+  if (!documentId) {
+    return res
+      .status(400)
+      .json({ message: "Bad Request - Document ID required" });
+  }
+
+  try {
+    const submission = await db.query(getSubmissionQuery, [documentId]);
+
+    if (submission.rows.length === 0) {
+      return res.status(404).json({ message: "Submission not found" });
+    }
+
+    return res.status(200).json(submission.rows[0]);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.put("/documents/:id/submission", async (req: Request, res: Response) => {
+  const documentId = req.params.id;
+  const { status, reviewed_by, reviewed_at } = req.body;
+  const updateSubmissionQuery = getSQLString(
+    "submission/update-submission.sql",
+  );
+
+  if (!documentId) {
+    return res
+      .status(400)
+      .json({ message: "Bad Request - Document ID required" });
+  }
+
+  try {
+    const submission = await db.query(updateSubmissionQuery, [
+      status || null,
+      reviewed_by || null,
+      reviewed_at || null,
+      documentId,
+    ]);
+
+    if (submission.rows.length === 0) {
+      return res.status(404).json({ message: "Submission not found" });
+    }
+
+    return res.status(200).json(submission.rows[0]);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 app.post(
   "/admin/create_documents_table",
   async (req: Request, res: Response) => {
@@ -408,7 +537,7 @@ app.post(
       );
 
       const documentsAsList = documents.map((document: InsertDocumentDao) => {
-        return [document.external_link, document.date];
+        return [document.title, document.external_link, document.date];
       });
 
       const bulkInsertDocuments = format(
@@ -450,6 +579,35 @@ app.delete(
 
     res.status(200).json({
       message: "Deleted document_comments table.",
+    });
+  },
+);
+
+// Submissions Table Endpoints
+app.post(
+  "/admin/create_submissions_table",
+  async (req: Request, res: Response) => {
+    const createSubmissionsTableQuery = getSQLString(
+      "admin/create-submissions-table.sql",
+    );
+    await db.query(createSubmissionsTableQuery);
+
+    res.status(201).json({
+      message: "Created submissions table.",
+    });
+  },
+);
+
+app.delete(
+  "/admin/delete_submissions_table",
+  async (req: Request, res: Response) => {
+    const deleteSubmissionsTableQuery = getSQLString(
+      "admin/delete-submissions-table.sql",
+    );
+    await db.query(deleteSubmissionsTableQuery);
+
+    res.status(200).json({
+      message: "Deleted submissions table.",
     });
   },
 );

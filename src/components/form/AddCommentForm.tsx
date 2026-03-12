@@ -1,8 +1,12 @@
 import type { Comment } from "../../types/Comment";
-import { createComment } from "../../services/AppService";
+import { createComment } from "../../services/comment/CommentService";
 import { SubmitButton } from "../button/submit/SubmitButton";
 
-export const AddCommentForm = () => {
+type AddCommentFormProps = {
+  documentId?: number;
+};
+
+export const AddCommentForm = ({ documentId }: AddCommentFormProps) => {
   return (
     <form
       id="commentForm"
@@ -21,7 +25,7 @@ export const AddCommentForm = () => {
           created_at: new Date().toISOString(),
         };
 
-        createComment(comment);
+        createComment(comment, documentId);
         e.target.reset();
       }}
     >
@@ -29,8 +33,19 @@ export const AddCommentForm = () => {
         <div>
           <input type="hidden" name="comment_id" readOnly></input>
         </div>
+        <div>
+          <input
+            type="hidden"
+            name="document_id"
+            readOnly
+            value={documentId}
+          ></input>
+        </div>
         <div className="flex flex-1 justify-between">
-          <label className="font-serif mr-2" htmlFor="text">
+          <label
+            className="block text-sm font-semibold text-gray-700 mb-2 font-serif"
+            htmlFor="text"
+          >
             Text
           </label>
           <textarea
@@ -41,7 +56,10 @@ export const AddCommentForm = () => {
           ></textarea>
         </div>
         <div className="flex flex-1 justify-between">
-          <label className="font-serif flex flex-1 mr-2" htmlFor="author">
+          <label
+            className="block text-sm font-semibold text-gray-700 mb-2 font-serif"
+            htmlFor="author"
+          >
             Author
           </label>
           <input
@@ -52,7 +70,10 @@ export const AddCommentForm = () => {
           ></input>
         </div>
         <div className="flex flex-1 justify-between">
-          <label className="font-serif flex flex-1 mr-2" htmlFor="image">
+          <label
+            className="block text-sm font-semibold text-gray-700 mb-2 font-serif"
+            htmlFor="image"
+          >
             Image
           </label>
           <input
@@ -62,7 +83,7 @@ export const AddCommentForm = () => {
             name="image"
           ></input>
         </div>
-        <div className="flex flex-1 place-self-end bg-white p-2">
+        <div className="flex flex-1 place-self-end">
           <SubmitButton></SubmitButton>
         </div>
       </div>
