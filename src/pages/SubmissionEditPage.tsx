@@ -82,7 +82,7 @@ export function SubmissionEditPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg font-serif">Loading submission...</div>
+        <div className="text-lg">Loading submission...</div>
       </div>
     );
   }
@@ -147,7 +147,7 @@ export function SubmissionEditPage() {
                 <option value="rejected">Rejected</option>
                 <option value="under_review">Under Review</option>
               </select>
-              <p className="mt-2 text-sm text-gray-500 font-serif">
+              <p className="mt-2 text-sm text-gray-500">
                 Select the current status of the submission
               </p>
             </div>
@@ -167,7 +167,7 @@ export function SubmissionEditPage() {
                 placeholder="Enter reviewer name"
                 className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent font-serif"
               />
-              <p className="mt-2 text-sm text-gray-500 font-serif">
+              <p className="mt-2 text-sm text-gray-500">
                 Name of the person who reviewed this submission
               </p>
             </div>
@@ -186,7 +186,7 @@ export function SubmissionEditPage() {
                 onChange={(e) => setReviewedAt(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent font-serif"
               />
-              <p className="mt-2 text-sm text-gray-500 font-serif">
+              <p className="mt-2 text-sm text-gray-500">
                 Date and time when the submission was reviewed
               </p>
             </div>
@@ -197,7 +197,13 @@ export function SubmissionEditPage() {
               </div>
             )}
 
-            <div className="flex gap-4">
+            <div className="flex justify-end gap-4">
+              <Link
+                to={`/documents/${id}`}
+                className="px-6 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+              >
+                Cancel
+              </Link>
               <button
                 type="submit"
                 disabled={saving}
@@ -207,12 +213,6 @@ export function SubmissionEditPage() {
               >
                 {saving ? "Saving..." : "Save Changes"}
               </button>
-              <Link
-                to={`/documents/${id}`}
-                className="px-6 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
-              >
-                Cancel
-              </Link>
             </div>
           </form>
         </div>

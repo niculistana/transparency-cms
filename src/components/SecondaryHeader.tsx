@@ -14,8 +14,7 @@ export const SecondaryHeader = () => {
   };
 
   const linkClass = (path: string) => {
-    const base =
-      "inline-flex items-center gap-2 px-4 py-2 font-serif font-semibold transition-colors";
+    const base = "inline-flex items-center gap-2 px-4 py-2 transition-colors";
     const active = isActive(path)
       ? "bg-blue-600 text-white"
       : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200";

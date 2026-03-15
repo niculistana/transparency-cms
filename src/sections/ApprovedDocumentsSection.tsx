@@ -23,13 +23,11 @@ export function ApprovedDocumentsSection() {
       <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="flex items-center gap-2 mb-4">
           <CheckCircle className="h-6 w-6 text-green-600" />
-          <h2 className="text-2xl font-bold text-gray-900 font-serif">
+          <h2 className="text-2xl font-bold text-gray-900">
             Approved Documents
           </h2>
         </div>
-        <div className="text-gray-600 font-serif">
-          Loading approved documents...
-        </div>
+        <div className="text-gray-600">Loading approved documents...</div>
       </div>
     );
   }
@@ -39,7 +37,7 @@ export function ApprovedDocumentsSection() {
       <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="flex items-center gap-2 mb-4">
           <CheckCircle className="h-6 w-6 text-green-600" />
-          <h2 className="text-2xl font-bold text-gray-900 font-serif">
+          <h2 className="text-2xl font-bold text-gray-900">
             Approved Documents
           </h2>
         </div>
@@ -57,17 +55,13 @@ export function ApprovedDocumentsSection() {
       <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="flex items-center gap-2 mb-4">
           <CheckCircle className="h-6 w-6 text-green-600" />
-          <h2 className="text-2xl font-bold text-gray-900 font-serif">
+          <h2 className="text-2xl font-bold text-gray-900">
             Approved Documents
           </h2>
           <span className="ml-2 px-3 py-1 bg-green-200 text-green-800 text-sm font-semibold rounded-full">
             {approvedDocuments.length}
           </span>
         </div>
-        <p className="text-sm text-green-800 font-serif mb-4">
-          These documents are approved and ready to be published.
-        </p>
-
         <div className="grid grid-cols-1 gap-4">
           {approvedDocuments.map((document) => (
             <Link

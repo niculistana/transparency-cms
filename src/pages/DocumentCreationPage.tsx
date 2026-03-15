@@ -90,7 +90,7 @@ export function DocumentCreationPage() {
                 className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-serif"
                 required
               />
-              <p className="mt-2 text-sm text-gray-500 font-serif">
+              <p className="mt-2 text-sm text-gray-500">
                 Provide a descriptive title for the document
               </p>
             </div>

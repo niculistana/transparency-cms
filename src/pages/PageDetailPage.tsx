@@ -19,7 +19,7 @@ export function PageDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg font-serif">Loading page...</div>
+        <div className="text-lg">Loading page...</div>
       </div>
     );
   }

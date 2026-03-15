@@ -55,7 +55,7 @@ export function SubmissionStatusLabel({ status }: SubmissionStatusLabelProps) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-3 py-1 border ${config.bgColor} ${config.textColor} ${config.borderColor} font-serif text-sm font-semibold`}
+      className={`inline-flex items-center gap-1.5 px-3 py-1 border ${config.bgColor} ${config.textColor} ${config.borderColor} text-sm font-semibold`}
     >
       <Icon className="h-4 w-4" />
       {config.label}

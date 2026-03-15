@@ -99,7 +99,7 @@ export function PagesPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg font-serif">Loading pages...</div>
+        <div className="text-lg">Loading pages...</div>
       </div>
     );
   }
@@ -107,7 +107,7 @@ export function PagesPage() {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-red-600 font-serif">Error: {error}</div>
+        <div className="text-red-600">Error: {error}</div>
       </div>
     );
   }
@@ -117,9 +117,7 @@ export function PagesPage() {
       <ApprovedDocumentsSection />
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 font-serif">
-            All Pages
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900">All Pages</h1>
         </div>
 
         {pages.length > 0 && (
@@ -132,7 +130,7 @@ export function PagesPage() {
                 placeholder="Search by title, content, slug, or page ID..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-serif"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               {searchQuery && (
                 <button
@@ -147,7 +145,7 @@ export function PagesPage() {
             {/* Filter and Sort Controls */}
             <div className="flex flex-wrap gap-4 items-end">
               {/* Published Filter */}
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 place-self-start">
                 <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2 font-serif">
                   <Globe className="h-4 w-4" />
                   Status
@@ -157,7 +155,7 @@ export function PagesPage() {
                   onChange={(e) =>
                     setFilterPublished(e.target.value as typeof filterPublished)
                   }
-                  className="px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-serif"
+                  className="px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="all">All Pages</option>
                   <option value="published">Published Only</option>
@@ -166,15 +164,15 @@ export function PagesPage() {
               </div>
 
               {/* Sort By */}
-              <div className="flex-shrink-0">
-                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2 font-serif">
+              <div className="flex-shrink-0 place-self-start">
+                <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
                   <ArrowUpDown className="h-4 w-4" />
                   Sort By
                 </label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                  className="px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-serif"
+                  className="px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="newest">Newest First</option>
                   <option value="oldest">Oldest First</option>
@@ -184,7 +182,7 @@ export function PagesPage() {
               {/* Date Range Filter */}
               <div className="flex gap-3 items-end">
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2 font-serif">
+                  <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
                     <Calendar className="h-4 w-4" />
                     From Date
                   </label>
@@ -192,18 +190,18 @@ export function PagesPage() {
                     type="date"
                     value={dateFrom}
                     onChange={(e) => setDateFrom(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-serif"
+                    className="px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-gray-700 mb-2 block font-serif">
+                  <label className="text-sm font-semibold text-gray-700 mb-2 block">
                     To Date
                   </label>
                   <input
                     type="date"
                     value={dateTo}
                     onChange={(e) => setDateTo(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-serif"
+                    className="px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -220,7 +218,7 @@ export function PagesPage() {
                     setSearchQuery("");
                     setFilterPublished("all");
                   }}
-                  className="px-4 py-2 bg-gray-200 text-gray-700 font-serif hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
+                  className="px-4 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
                 >
                   Clear Filters
                 </button>
@@ -232,14 +230,12 @@ export function PagesPage() {
         {pages.length === 0 ? (
           <div className="text-center py-12">
             <FileText className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <p className="text-gray-600 font-serif">No pages available.</p>
+            <p className="text-gray-600">No pages available.</p>
           </div>
         ) : filteredPages.length === 0 ? (
           <div className="text-center py-12 bg-gray-50">
             <FileText className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <p className="text-gray-600 font-serif">
-              No pages match your search.
-            </p>
+            <p className="text-gray-600">No pages match your search.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">
@@ -258,12 +254,12 @@ export function PagesPage() {
                           {page.title}
                         </h3>
                         {page.published ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-800 text-xs font-serif">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-800 text-xs">
                             <Globe className="h-3 w-3" />
                             Published
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-800 text-xs font-serif">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-800 text-xs">
                             <EyeOff className="h-3 w-3" />
                             Unpublished
                           </span>
@@ -291,7 +287,7 @@ export function PagesPage() {
         )}
 
         {/* Results Count */}
-        <div className="py-4 flex flex-1 justify-end text-sm text-gray-600 font-serif">
+        <div className="py-4 flex flex-1 justify-end text-sm text-gray-600">
           Showing {filteredPages.length} of {pages.length} pages
         </div>
       </div>

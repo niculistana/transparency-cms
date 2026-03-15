@@ -127,7 +127,8 @@ export function DocumentDetailPage() {
                     Edit Document
                   </Link>
                 )}
-                {document.submission?.status === "approved" &&
+                {canReviewDocument &&
+                  document.submission?.status === "approved" &&
                   document.submission && (
                     <PublishButton
                       onClick={handlePublishDocument}
@@ -173,7 +174,7 @@ export function DocumentDetailPage() {
 
           <div className="flex justify-self-end place-self-end">
             {document.created_at && (
-              <p className="text-sm text-gray-600 font-serif">
+              <p className="text-sm text-gray-600">
                 Published: {new Date(document.created_at).toLocaleString()}
               </p>
             )}
