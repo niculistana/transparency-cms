@@ -9,10 +9,14 @@ import { DocumentCreationPage } from "./pages/DocumentCreationPage";
 import { DocumentEditPage } from "./pages/DocumentEditPage";
 import { SubmissionEditPage } from "./pages/SubmissionEditPage";
 import { CommentModerationPage } from "./pages/CommentModerationPage";
+import { SettingsPage } from "./pages/SettingsPage";
+import { PagesPage } from "./pages/PagesPage";
+import { PageDetailPage } from "./pages/PageDetailPage";
 import { LoginAs } from "./admin/LoginAs";
 import { LogoutPage } from "./pages/LogoutPage";
 import { useAuthService } from "./services/AuthService";
 import { Header } from "./components/Header";
+import { SecondaryHeader } from "./components/SecondaryHeader";
 
 function HomePage() {
   const isLoggedIn = useAuthService((state) => state.isLoggedIn);
@@ -88,6 +92,7 @@ createRoot(document.getElementById("root")!).render(
             <RoleProtectedRoute allowedRoles={["ADMIN", "AUTHOR"]}>
               <div className="w-full min-h-screen bg-gray-50">
                 <Header />
+                <SecondaryHeader />
                 <DocumentCreationPage />
               </div>
             </RoleProtectedRoute>
@@ -99,6 +104,7 @@ createRoot(document.getElementById("root")!).render(
             <ProtectedRoute>
               <div className="w-full min-h-screen bg-gray-50">
                 <Header />
+                <SecondaryHeader />
                 <DocumentDetailPage />
               </div>
             </ProtectedRoute>
@@ -110,6 +116,7 @@ createRoot(document.getElementById("root")!).render(
             <RoleProtectedRoute allowedRoles={["ADMIN", "AUTHOR", "EDIT"]}>
               <div className="w-full min-h-screen bg-gray-50">
                 <Header />
+                <SecondaryHeader />
                 <DocumentEditPage />
               </div>
             </RoleProtectedRoute>
@@ -121,6 +128,7 @@ createRoot(document.getElementById("root")!).render(
             <RoleProtectedRoute allowedRoles={["ADMIN", "AUTHOR", "EDIT"]}>
               <div className="w-full min-h-screen bg-gray-50">
                 <Header />
+                <SecondaryHeader />
                 <SubmissionEditPage />
               </div>
             </RoleProtectedRoute>
@@ -135,6 +143,41 @@ createRoot(document.getElementById("root")!).render(
                 <CommentModerationPage />
               </div>
             </RoleProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <div className="w-full min-h-screen bg-gray-50">
+                <Header />
+                <SettingsPage />
+              </div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/pages"
+          element={
+            <ProtectedRoute>
+              <div className="w-full min-h-screen bg-gray-50">
+                <Header />
+                <SecondaryHeader />
+                <PagesPage />
+              </div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/pages/:id"
+          element={
+            <ProtectedRoute>
+              <div className="w-full min-h-screen bg-gray-50">
+                <Header />
+                <SecondaryHeader />
+                <PageDetailPage />
+              </div>
+            </ProtectedRoute>
           }
         />
         <Route path="/" element={<Navigate to="/home" replace />} />

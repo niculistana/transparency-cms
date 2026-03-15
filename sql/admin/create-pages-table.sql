@@ -1,0 +1,9 @@
+CREATE TABLE pages (
+    page_id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    slug TEXT UNIQUE NOT NULL,
+    published BOOLEAN DEFAULT false,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+)

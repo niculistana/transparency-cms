@@ -49,7 +49,7 @@
     "lint:client": "eslint .",
     "package:production": "npm run build:all:production && cp package.json dist && cp package-lock.json dist && zip -r dist-latest.zip dist && npm run clean",
     "postbuild:production": "mkdir -p dist && cp -R build dist",
-    "prepare:build": "mkdir build && curl https://truststore.pki.rds.amazonaws.com/ap-southeast-1/ap-southeast-1-bundle.pem > build/cert.pem && cp -R sql build",
+    "prepare:build": "mkdir build && curl https://truststore.pki.rds.amazonaws.com/ap-southeast-1/ap-southeast-1-bundle.pem > build/cert.pem && cp -R sql build && cp -R scripts build",
     "preview:production": "NODE_ENV=production node dist/build/server/index.js",
     "start:server": "NODE_ENV=development ./server/index.ts",
     "test": "tsx ./server/db.ts",

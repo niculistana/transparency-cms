@@ -1,10 +1,11 @@
-import { CheckCircle, Clock, XCircle, Eye } from "lucide-react";
+import { CheckCircle, Clock, XCircle, Eye, Globe } from "lucide-react";
 
 export type SubmissionStatus =
   | "pending"
   | "approved"
   | "rejected"
-  | "under_review";
+  | "under_review"
+  | "published";
 
 interface SubmissionStatusLabelProps {
   status: SubmissionStatus;
@@ -38,6 +39,13 @@ const statusConfig = {
     textColor: "text-blue-800",
     borderColor: "border-blue-300",
     icon: Eye,
+  },
+  published: {
+    label: "Published",
+    bgColor: "bg-purple-100",
+    textColor: "text-purple-800",
+    borderColor: "border-purple-300",
+    icon: Globe,
   },
 };
 

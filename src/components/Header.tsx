@@ -1,11 +1,35 @@
 import { useAuthService } from "../services/AuthService";
-import { LogoutButton } from "./LogoutButton";
-import { Link } from "react-router-dom";
-import { Shield } from "lucide-react";
+import { useDashboardService } from "../services/dashboard/DashboardService";
+import { useActivityService } from "../services/activity/ActivityService";
+import { HeaderActions } from "./HeaderActions";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Bell } from "lucide-react";
 
 export const Header = () => {
   const isLoggedIn = useAuthService((state) => state.isLoggedIn);
   const currentRole = useAuthService((state) => state.currentRole);
+  const toggleActivitySidebar = useDashboardService(
+    (state) => state.toggleActivitySidebar,
+  );
+  const setActivitySidebarOpen = useDashboardService(
+    (state) => state.setActivitySidebarOpen,
+  );
+  const activities = useActivityService((state) => state.activities);
+  const unreadCount = activities.length;
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNotificationClick = () => {
+    if (location.pathname !== "/dashboard") {
+      navigate("/dashboard");
+      // Use setTimeout to ensure navigation completes before opening sidebar
+      setTimeout(() => {
+        setActivitySidebarOpen(true);
+      }, 100);
+    } else {
+      toggleActivitySidebar();
+    }
+  };
 
   return (
     <header className="w-full bg-white shadow-md">
@@ -25,16 +49,19 @@ export const Header = () => {
           </div>
           {isLoggedIn && (
             <div className="flex items-center gap-4">
-              {currentRole === "ADMIN" && (
-                <Link
-                  to="/comments"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors"
-                >
-                  <Shield className="h-4 w-4" />
-                  Moderate Comments
-                </Link>
-              )}
-              <LogoutButton />
+              <button
+                onClick={handleNotificationClick}
+                className="relative p-2 text-gray-700 hover:text-indigo-600 transition-colors"
+                aria-label="Toggle activity feed"
+              >
+                <Bell className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
+              </button>
+              <HeaderActions />
             </div>
           )}
         </div>

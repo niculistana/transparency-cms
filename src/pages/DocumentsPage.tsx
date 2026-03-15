@@ -1,43 +1,29 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { host } from "../services/shared/Config";
 import type { Document } from "../types/Document";
 import { FileText, Plus, Search, ArrowUpDown, Calendar } from "lucide-react";
 import { useAuthService } from "../services/AuthService";
+import { useDashboardService } from "../services/dashboard/DashboardService";
 
 export function DocumentsPage() {
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const documents = useDashboardService((state) => state.documents);
+  const loading = useDashboardService((state) => state.loading);
+  const error = useDashboardService((state) => state.error);
+  const fetchDocuments = useDashboardService((state) => state.fetchDocuments);
+
   const [filteredDocuments, setFilteredDocuments] = useState<Document[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const currentRole = useAuthService((state) => state.currentRole);
 
   const canCreateDocument =
     currentRole && ["ADMIN", "AUTHOR"].includes(currentRole);
 
   useEffect(() => {
-    const fetchDocuments = async () => {
-      try {
-        const response = await fetch(`${host}/documents`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch documents");
-        }
-        const data = await response.json();
-        setDocuments(data || []);
-        setFilteredDocuments(data || []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Unknown error");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchDocuments();
-  }, []);
+  }, [fetchDocuments]);
 
   useEffect(() => {
     let filtered = [...documents];
@@ -115,7 +101,7 @@ export function DocumentsPage() {
     <div className="w-full">
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">My Documents</h1>
+          <h1 className="text-3xl font-bold text-gray-900">All Documents</h1>
           {canCreateDocument && (
             <Link
               to="/documents/create"

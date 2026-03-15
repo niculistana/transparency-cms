@@ -1,15 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { host } from "../services/shared/Config";
-import type { Document } from "../types/Document";
 import {
-  ArrowLeft,
-  ExternalLink,
-  FileText,
-  Edit,
-  Send,
-  Pencil,
-} from "lucide-react";
+  useDocumentDetailService,
+  fetchDocument,
+  submitDocument,
+  publishDocument,
+} from "../services/document-detail/DocumentDetailService";
+import { ArrowLeft, ExternalLink, FileText, Edit, Send } from "lucide-react";
 import { AddCommentSection } from "../sections/AddCommentSection";
 import { CommentsSection } from "../sections/CommentsSection";
 import { useAuthService } from "../services/AuthService";
@@ -17,13 +14,15 @@ import {
   SubmissionStatusLabel,
   type SubmissionStatus,
 } from "../components/label";
+import { EditSubmissionButton, PublishButton } from "../components/button";
 
 export function DocumentDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const [document, setDocument] = useState<Document | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const document = useDocumentDetailService((state) => state.document);
+  const loading = useDocumentDetailService((state) => state.loading);
+  const submitting = useDocumentDetailService((state) => state.submitting);
+  const publishing = useDocumentDetailService((state) => state.publishing);
+  const error = useDocumentDetailService((state) => state.error);
   const currentRole = useAuthService((state) => state.currentRole);
 
   const canEditDocument =
@@ -34,56 +33,32 @@ export function DocumentDetailPage() {
   const canReviewDocument = currentRole === "ADMIN" || currentRole === "AUTHOR";
 
   useEffect(() => {
-    const fetchDocument = async () => {
-      try {
-        const response = await fetch(`${host}/documents/${id}`);
-        if (!response.ok) {
-          throw new Error("Document not found");
-        }
-        const data = await response.json();
-        setDocument(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Unknown error");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (id) {
-      fetchDocument();
+      fetchDocument(id);
     }
   }, [id]);
 
   const handleSubmitDocument = async () => {
-    if (!id || !document) return;
+    if (!id) return;
 
-    setSubmitting(true);
-    try {
-      const response = await fetch(`${host}/documents/${id}/submission`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          submitted_by: currentRole || "UNKNOWN",
-          status: "pending",
-        }),
-      });
+    const result = await submitDocument(id, currentRole || "UNKNOWN");
 
-      if (!response.ok) {
-        throw new Error("Failed to submit document");
-      }
-
-      const submissionData = await response.json();
-      setDocument({
-        ...document,
-        submission: submissionData,
-      });
+    if (result.success) {
       alert("Document submitted successfully for approval!");
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to submit document");
-    } finally {
-      setSubmitting(false);
+    } else {
+      alert(result.error || "Failed to submit document");
+    }
+  };
+
+  const handlePublishDocument = async () => {
+    if (!id) return;
+
+    const result = await publishDocument(id);
+
+    if (result.success) {
+      alert("Document published successfully!");
+    } else {
+      alert(result.error || "Failed to publish document");
     }
   };
 
@@ -152,14 +127,18 @@ export function DocumentDetailPage() {
                     Edit Document
                   </Link>
                 )}
+                {document.submission?.status === "approved" &&
+                  document.submission && (
+                    <PublishButton
+                      onClick={handlePublishDocument}
+                      loading={publishing}
+                      text="Publish"
+                    />
+                  )}
                 {canReviewDocument && document.submission && (
-                  <Link
+                  <EditSubmissionButton
                     to={`/documents/${id}/submission/edit`}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white font-serif hover:bg-green-700 transition-colors"
-                  >
-                    <Pencil className="h-4 w-4" />
-                    Edit Submission
-                  </Link>
+                  />
                 )}
                 {!document.submission && (
                   <div>

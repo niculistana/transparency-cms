@@ -67,6 +67,7 @@ export const AddCommentForm = ({ documentId }: AddCommentFormProps) => {
             id="commentFormAuthorInput"
             type="text"
             name="author"
+            defaultValue="test.user@example.com"
           ></input>
         </div>
         <div className="flex flex-1 justify-between">

@@ -157,7 +157,7 @@ export function DocumentEditPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className={`px-6 py-2 bg-blue-600 text-white font-semibold font-serif hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors ${
+                className={`px-6 py-2 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors ${
                   saving ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
@@ -165,7 +165,7 @@ export function DocumentEditPage() {
               </button>
               <Link
                 to={`/documents/${id}`}
-                className="px-6 py-2 bg-gray-200 text-gray-700 font-semibold font-serif hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+                className="px-6 py-2 bg-gray-200 text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
               >
                 Cancel
               </Link>
